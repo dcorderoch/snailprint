@@ -9,7 +9,10 @@ void wait( unsigned long milliseconds );
 int main( int argc , char const *argv[] ) {
 	if( argc < 2 ) {
     	printf( "USAGE:\n" );
+    	fflush(stdout);
     	printf( "%s <ms per character print> <string to print>\n",argv[0] );
+    	fflush(stdout);
+    	return 0;
     }
     int i;
     for( i=2 ; i < argc ; i++ ) {
@@ -17,8 +20,10 @@ int main( int argc , char const *argv[] ) {
         if ( i < argc - 1 )
         {
         	printf(" ");
+        	fflush(stdout);
         }
     }
+    wait( 1000 );
 	return 0;
 }
 
@@ -26,12 +31,23 @@ void slowPrint( const char * slowString, unsigned long milliseconds ) {
 	unsigned long strSize = strlen( slowString );
 	int i = 0;
 	for ( ; i < strSize ; ++i ) {
-		if ( i < strSize - 1)
+		if ( i < (strSize - 1) )
 		{
-			if (*(slowString+i) == '\\') {
-				printf("\n");
+			if ( *(slowString+i) == '\\' ) {
+				char * tmp = malloc(sizeof(char));
+				if ( *(slowString+i+1) == 'b') {
+					*tmp = '\b';
+				}
+				if ( *(slowString+i+1) == 'n') {
+					*tmp = '\n';
+				}
+				if ( *(slowString+i+1) == 't') {
+					*tmp = '\t';
+				}
+				printf("%c",*tmp);
 				i++;
-				fflush(stdout);	
+				fflush(stdout);
+				free(tmp);
 				continue;
 			}
 		}
